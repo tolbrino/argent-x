@@ -49,10 +49,14 @@ export const useSoftReload = () => {
 }
 
 /** re-load the HTML page, can have some side-effects including localStorage+SWR state pollution */
+export const hardReload = () => {
+  const url = browser.runtime.getURL("index.html")
+  window.location.href = url
+}
+
 export const useHardReload = () => {
   return useCallback(() => {
-    const url = browser.runtime.getURL("index.html")
-    window.location.href = url
+    hardReload()
   }, [])
 }
 
