@@ -28,7 +28,7 @@ if (IS_DEV) {
   messageStream.subscribe(([message]) => {
     console.log("Received message", message)
     if (message.type === HOT_RELOAD_MESSAGE) {
-      hardReload()
+      hardReload(false)
     }
   })
 }

@@ -9,6 +9,7 @@ import React, {
 import browser from "webextension-polyfill"
 
 import { delay } from "../../shared/utils/delay"
+import { IS_DEV } from "../../shared/utils/dev"
 import { useAppState } from "../app.state"
 
 export interface ISoftReloadContext {
@@ -48,16 +49,35 @@ export const useSoftReload = () => {
   return softReload
 }
 
-/** re-load the HTML page, can have some side-effects including localStorage+SWR state pollution */
-export const hardReload = () => {
+/**
+ * re-load the HTML page
+ *
+ * @param resetRoute - if `false` and in development mode only, will try to reinstate the current route after reload
+ */
+
+export const hardReload = (resetRoute = true) => {
   const url = browser.runtime.getURL("index.html")
-  window.location.href = url
+  const shouldResetRoute = !IS_DEV || resetRoute
+  window.location.href = shouldResetRoute
+    ? url
+    : `${url}?initialHardReloadRoute=${encodeURIComponent(
+        window.location.pathname,
+      )}`
 }
 
-export const useHardReload = () => {
+export const useHardReload = (resetRoute = true) => {
   return useCallback(() => {
-    hardReload()
-  }, [])
+    hardReload(resetRoute)
+  }, [resetRoute])
+}
+
+export const getInitialHardReloadRoute = () => {
+  if (!IS_DEV) {
+    return
+  }
+  const query = new URLSearchParams(window.location.search)
+  const initialRoute = query.get("initialHardReloadRoute")
+  return initialRoute
 }
 
 /** reset local storage while preserving some UI state */
