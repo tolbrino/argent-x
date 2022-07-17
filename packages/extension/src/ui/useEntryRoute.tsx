@@ -16,11 +16,12 @@ export const useEntryRoute = () => {
   useEffect(() => {
     ;(async () => {
       if (isFirstRender) {
+        const query = new URLSearchParams(window.location.search)
         const entry = await determineEntry()
         useAppState.setState({ isLoading: false, isFirstRender: false })
         navigate(entry)
         if (IS_DEV) {
-          const initialRoute = getInitialHardReloadRoute()
+          const initialRoute = getInitialHardReloadRoute(query)
           if (initialRoute) {
             await delay(0)
             navigate(initialRoute)

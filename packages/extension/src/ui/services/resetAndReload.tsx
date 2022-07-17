@@ -71,11 +71,7 @@ export const useHardReload = (resetRoute = true) => {
   }, [resetRoute])
 }
 
-export const getInitialHardReloadRoute = () => {
-  if (!IS_DEV) {
-    return
-  }
-  const query = new URLSearchParams(window.location.search)
+export const getInitialHardReloadRoute = (query: URLSearchParams) => {
   const initialRoute = query.get("initialHardReloadRoute")
   return initialRoute
 }
